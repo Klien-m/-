@@ -1,6 +1,5 @@
 package recursive
 
-import EmptyListException
 import java.util.*
 
 /**
