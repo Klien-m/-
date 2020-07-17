@@ -60,4 +60,24 @@ object Sort {
         }
         return newList
     }
+
+    /**
+     * 归并排序
+     */
+    fun mergeSort(nums: IntArray, l: Int, h: Int): IntArray {
+        if (l == h) return intArrayOf(nums[l])
+        val mid = l + (h - l) / 2
+        val leftArr = mergeSort(nums, l, mid) // 左有序数组
+        val rightArr = mergeSort(nums, mid + 1, h) // 右有序数组
+        val newNum = IntArray(leftArr.size + rightArr.size) // 新有序数组
+        var m = 0
+        var i = 0
+        var j = 0
+        while (i < leftArr.size && j < rightArr.size) {
+            newNum[m++] = if (leftArr[i] < rightArr[j]) leftArr[i++] else rightArr[j++]
+        }
+        while (i < leftArr.size) newNum[m++] = leftArr[i++]
+        while (j < rightArr.size) newNum[m++] = rightArr[j++]
+        return newNum
+    }
 }
