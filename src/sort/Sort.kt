@@ -1,7 +1,5 @@
 package sort
 
-import kotlin.random.Random
-
 /**
  * @since 2020/7/14 10:09
  */
@@ -47,5 +45,19 @@ object Sort {
             val greater = list.filterIndexed { i, it -> (i != index && it > pivot) }
             quickSort(less) + listOf(pivot) + quickSort(greater)
         }
+    }
+
+    fun BubbleSort(list: List<Int>): List<Int> {
+        val newList = list.toMutableList()
+        for (i in 0 until newList.size - 1) {
+            for (j in 0 until newList.size - i - 1) {
+                if (newList[j] > newList[j + 1]) {
+                    val tmp = list[j]
+                    newList[j] = newList[j + 1]
+                    newList[j + 1] = tmp
+                }
+            }
+        }
+        return newList
     }
 }
