@@ -21,7 +21,6 @@ public class CuteRope {
         for (int i = 1; i <= 4; ++i) {
             dp[i] = i;
         }
-        // 此方法为找到使得每次分割后乘积最大的分割长度。
 //        for (int i = 5; i <= target; ++i) {
 //            for (int j = 1; j < i; ++j) { // 此处可使 j < 4，尽可能使每一段长度都为3
 //                dp[i] = Math.max(dp[i], j * dp[i - j]);
@@ -44,5 +43,15 @@ public class CuteRope {
 //        } else {
 //            return 2 * (int) Math.pow(3, target / 3);
 //        }
+
+//        if (target < 4) {
+//            return target - 1;
+//        }
+//        int res = 1;
+//        while (target > 4) {
+//            res = res * 3;
+//            target -= 3;
+//        }
+//        return res * target;
     }
 }
