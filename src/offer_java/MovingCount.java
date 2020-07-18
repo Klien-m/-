@@ -28,10 +28,10 @@ public class MovingCount {
 
     public int movingCount(int threshold, int rows, int cols) {
         boolean[][] flag = new boolean[rows][cols];
-        return dfs(threshold, rows, cols, flag, 0, 0);
+        return judge(threshold, rows, cols, flag, 0, 0);
     }
 
-    private int dfs(int threshold, int rows, int cols, boolean[][] flag, int i, int j) {
+    private int judge(int threshold, int rows, int cols, boolean[][] flag, int i, int j) {
         if (i < 0 || i >= rows || j < 0 || j >= cols || flag[i][j]) {
             return 0;
         }
@@ -39,9 +39,9 @@ public class MovingCount {
             return 0;
         }
         flag[i][j] = true;
-        return dfs(threshold, rows, cols, flag, i - 1, j) +
-                dfs(threshold, rows, cols, flag, i + 1, j) +
-                dfs(threshold, rows, cols, flag, i, j - 1) +
-                dfs(threshold, rows, cols, flag, i, j + 1) + 1;
+        return judge(threshold, rows, cols, flag, i - 1, j) +
+                judge(threshold, rows, cols, flag, i + 1, j) +
+                judge(threshold, rows, cols, flag, i, j - 1) +
+                judge(threshold, rows, cols, flag, i, j + 1) + 1;
     }
 }
