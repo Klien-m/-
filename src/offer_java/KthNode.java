@@ -880,14 +880,27 @@ public class KthNode {
         return ret;
     }
 
+    /**
+     * (33)输入n个整数，找出其中最小的K个数。
+     * 例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4,。
+     */
+    public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
+        ArrayList<Integer> ret = new ArrayList<>();
+        return ret;
+    }
+
+    // 反转数。
+    public boolean isPalindrome(int x) {
+        if (x < 0 || (x % 10 == 0 && x != 0)) return false;
+        int revertedNumber = 0;
+        while (x > revertedNumber) {
+            revertedNumber = revertedNumber * 10 + x % 10;
+            x /= 10;
+        }
+        // 当数字长度为奇数时，我们可以通过 revertedNumber/10 去除处于中位的数字。
+        return x == revertedNumber || x == revertedNumber / 10;
+    }
 }
-
-
-
-
-
-
-
 
 
 
