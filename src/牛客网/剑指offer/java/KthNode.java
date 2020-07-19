@@ -1,4 +1,4 @@
-package offer_java;
+package 牛客网.剑指offer.java;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -897,8 +897,73 @@ public class KthNode {
             revertedNumber = revertedNumber * 10 + x % 10;
             x /= 10;
         }
-        // 当数字长度为奇数时，我们可以通过 revertedNumber/10 去除处于中位的数字。
+        // 当数字长度为奇数时，我们可 vertedNumber/10 去除处于中位的数字。
         return x == revertedNumber || x == revertedNumber / 10;
+    }
+
+    public int[] intersect(int[] nums1, int[] nums2) {
+//        // 将长度短的数组换到前面。
+//        if (nums1.length > nums2.length) {
+//            return intersect(nums2, nums1);
+//        }
+//        HashMap<Integer, Integer> map = new HashMap<>();
+//        for (int num : nums1) {
+//            int count = map.getOrDefault(num, 0) + 1;
+//            map.put(num, count);
+//        }
+//        int[] ans = new int[nums1.length];
+//        int index = 0;
+//        for (int num : nums2) {
+//            int count = map.getOrDefault(num, 0);
+//            if (count > 0) {
+//                ans[index++] = num;
+//                count--;
+//                if (count > 0) {
+//                    map.put(num, count);
+//                } else {
+//                    map.remove(num);
+//                }
+//            }
+//        }
+//        return Arrays.copyOfRange(ans, 0, index);
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        int min = Math.min(nums1.length, nums2.length);
+        int max = Math.max(nums1.length, nums2.length);
+        int[] ans = new int[min];
+        int i = 0, j = 0, index = 0;
+        while (i < max && j < max) {
+            if (nums1[i] == nums2[j]) {
+                ans[index++] = nums1[i];
+                i++;
+                j++;
+            } else if (nums1[i] < nums2[j]) {
+                i++;
+            } else {
+                j++;
+            }
+        }
+        return Arrays.copyOfRange(ans, 0, index);
+    }
+
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        char[] chars = s.toCharArray();
+        int i = 0;
+        while (i < chars.length) {
+            if (stack.size() == 0) {
+                stack.push(chars[i++]);
+            }
+            char c1 = stack.peek();
+            char c2 = chars[i];
+            if (c1 == '(' && c2 == ')' || c1 == '[' && c2 == ']' || c1 == '{' && c2 == '}') {
+                i++;
+                stack.pop();
+            } else {
+                stack.push(chars[i++]);
+            }
+        }
+        return stack.isEmpty();
     }
 }
 
