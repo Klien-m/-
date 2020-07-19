@@ -1,4 +1,4 @@
-package offer_java;
+package 牛客网.剑指offer.java;
 
 import java.util.ArrayList;
 
