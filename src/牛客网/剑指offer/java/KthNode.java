@@ -885,8 +885,21 @@ public class KthNode {
      * 例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4,。
      */
     public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
-        ArrayList<Integer> ret = new ArrayList<>();
-        return ret;
+        if (k == 0 || input.length == 0 || k > input.length) return new ArrayList<>();
+        PriorityQueue<Integer> queue = new PriorityQueue<>((v1, v2) -> v2 - v1);
+        for (int n : input) {
+            if (queue.size() < k) {
+                queue.offer(n);
+            } else if (queue.peek() > n) {
+                queue.poll();
+                queue.offer(n);
+            }
+        }
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int n : queue) {
+            list.add(n);
+        }
+        return list;
     }
 
     // 反转数。
@@ -944,26 +957,6 @@ public class KthNode {
             }
         }
         return Arrays.copyOfRange(ans, 0, index);
-    }
-
-    public boolean isValid(String s) {
-        Stack<Character> stack = new Stack<>();
-        char[] chars = s.toCharArray();
-        int i = 0;
-        while (i < chars.length) {
-            if (stack.size() == 0) {
-                stack.push(chars[i++]);
-            }
-            char c1 = stack.peek();
-            char c2 = chars[i];
-            if (c1 == '(' && c2 == ')' || c1 == '[' && c2 == ']' || c1 == '{' && c2 == '}') {
-                i++;
-                stack.pop();
-            } else {
-                stack.push(chars[i++]);
-            }
-        }
-        return stack.isEmpty();
     }
 }
 
