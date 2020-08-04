@@ -1,7 +1,6 @@
 package leetcode.date;
 
-import java.util.Arrays;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @since 2020/7/25 7:59
@@ -69,186 +68,150 @@ public class Function {
         return res;
     }
 
-    // 415 2020-08-03 09:08:58
-    public String addStrings(String num1, String num2) {
-        int i = num1.length() - 1, j = num2.length() - 1, add = 0;
-        StringBuffer ans = new StringBuffer();
-        while (i >= 0 || j >= 0 || add != 0) {
-            int x = i >= 0 ? num1.charAt(i) - '0' : 0;
-            int y = j >= 0 ? num2.charAt(j) - '0' : 0;
-            int result = x + y + add;
-            ans.append(result % 10);
-            add = result / 10;
-            i--;
-            j--;
+    // 207 2020-08-04 08:37:55
+    // 深度优先搜索，如果在搜索某一节点过程中遇到另一个搜索中的节点则其中存在环，即返回false
+    List<List<Integer>> edges;
+    int[] visited;
+    boolean valid = true;
+
+    // 节点有三种状态，0 未搜索，1 搜索中，2 已完成
+    private void dfs(int u) {
+        visited[u] = 1;
+        for (int v : edges.get(u)) {
+            if (visited[v] == 0) {
+                dfs(v);
+                if (!valid) return;
+            } else if (visited[v] == 1) {
+                valid = false;
+                return;
+            }
         }
-        ans.reverse();
-        return ans.toString();
+        visited[u] = 2;
     }
 
-    // 680 2020-08-03 09:19:57
-    public boolean validPalindrome(String s) {
-        int low = 0, high = s.length() - 1;
-        while (low < high) {
-            char c1 = s.charAt(low), c2 = s.charAt(high);
-            if (c1 == c2) {
-                low++;
-                high--;
-            } else {
-                boolean flag1 = true, flag2 = true;
-                for (int i = low, j = high - 1; i < j; i++, j--) {
-                    char c3 = s.charAt(i), c4 = s.charAt(j);
-                    if (c3 != c4) {
-                        flag1 = false;
-                        break;
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        edges = new ArrayList<>();
+        for (int i = 0; i < numCourses; i++)
+            edges.add(new ArrayList<>());
+        visited = new int[numCourses];
+        for (int[] info : prerequisites)
+            edges.get(info[1]).add(info[0]);
+        for (int i = 0; i < numCourses && valid; i++)
+            if (visited[i] == 0)
+                dfs(i);
+        return valid;
+    }
+
+    class BFS {
+        List<List<Integer>> edges;
+        int[] indeg;
+
+        public boolean canFinish(int numCourses, int[][] prerequisites) {
+            edges = new ArrayList<>();
+            for (int i = 0; i < numCourses; i++)
+                edges.add(new ArrayList<>());
+            indeg = new int[numCourses];
+            for (int[] info : prerequisites) {
+                edges.get(info[1]).add(info[0]);
+                ++indeg[info[0]]; // 出度
+            }
+            Queue<Integer> queue = new LinkedList<>();
+            for (int i = 0; i < numCourses; i++)
+                if (indeg[i] == 0)
+                    queue.offer(i);
+            int visited = 0;
+            while (!queue.isEmpty()) {
+                ++visited;
+                int u = queue.poll();
+                for (int v : edges.get(u)) {
+                    --indeg[v];
+                    if (indeg[v] == 0)
+                        queue.offer(v);
+                }
+            }
+            return visited == numCourses;
+        }
+    }
+
+    // 219 2020-08-04 10:00:16
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (set.contains(nums[i])) return true;
+            set.add(nums[i]);
+            if (set.size() > k)
+                set.remove(nums[i - k]);
+        }
+        return false;
+    }
+
+    // 970 2020-08-04 09:34:03
+    public List<Integer> powerfulIntegers(int x, int y, int bound) {
+        Set<Integer> set = new HashSet<>();
+        for (int a = 1; a < bound; a *= x) {
+            for (int b = 1; a + b <= bound; b *= y) {
+                set.add(a + b);
+                if (y == 1) break;
+            }
+            if (x == 1) break;
+        }
+        return new ArrayList<>(set);
+    }
+
+    // 278 2020-08-04 10:13:49
+    public int firstBadVersion(int n) {
+        int l = 1, r = n;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (isBadVersion(mid))
+                r = mid;
+            else l = mid + 1;
+        }
+        return l;
+    }
+
+    // 443 2020-08-04 10:30:33
+    // 指针 anchor 指向当前读到连续字符串的起始位置
+    public int compress(char[] chars) {
+        int anchor = 0, write = 0;
+        for (int read = 0; read < chars.length; read++) {
+            if (read + 1 == chars.length || chars[read + 1] != chars[read]) {
+                chars[write++] = chars[anchor];
+                if (read > anchor) {
+                    for (char c : ("" + (read - anchor + 1)).toCharArray()) {
+                        chars[write++] = c;
                     }
                 }
-                for (int i = low + 1, j = high; i < j; i++, j--) {
-                    char c3 = s.charAt(i), c4 = s.charAt(j);
-                    if (c3 != c4) {
-                        flag2 = false;
-                        break;
+                anchor = read + 1;
+            }
+        }
+        return write;
+    }
+
+    // 819 2020-08-04 11:22:15
+    public String mostCommonWord(String paragraph, String[] banned) {
+        paragraph += '.';
+        Set<String> banset = new HashSet<>();
+        for (String word : banned) banset.add(word);
+        Map<String, Integer> count = new HashMap<>();
+        String ans = "";
+        int ansfreq = 0;
+        StringBuilder word = new StringBuilder();
+        for (char c : paragraph.toCharArray()) {
+            if (Character.isLetter(c))
+                word.append(Character.toLowerCase(c));
+            else if (word.length() > 0) {
+                String finalword = word.toString();
+                if (!banset.contains(finalword)) {
+                    count.put(finalword, count.getOrDefault(finalword, 0) + 1);
+                    if (count.get(finalword) > ansfreq) {
+                        ans = finalword;
+                        ansfreq = count.get(finalword);
                     }
                 }
-                return flag1 || flag2;
+                word = new StringBuilder();
             }
         }
-        return true;
-    }
-
-    // 482 2020-08-03 09:39:13
-    public String licenseKeyFormatting(String S, int K) {
-        char[] chars = S.toCharArray();
-        char[] result = new char[chars.length + S.length() / K];
-        int length = 0;
-        int i = chars.length - 1, j = result.length - 1;
-        for (; i >= 0; ) {
-            if (chars[i] == '-') {
-                i--;
-                continue;
-            }
-            if (chars[i] >= 'a' && chars[i] <= 'z') {
-                chars[i] = (char) (chars[i] - 32);
-            }
-            if (length != K) {
-                result[j] = chars[i];
-                length++;
-                if (i == 0) {
-                    j--;
-                    break;
-                } else {
-                    i--;
-                    j--;
-                }
-            } else {
-                length = 1;
-                result[j] = '-';
-                result[j - 1] = chars[i];
-                j -= 2;
-                i--;
-            }
-        }
-        return new String(result, j + 1, result.length - j - 1);
-    }
-
-    // 28 2020-08-03 15:49:13
-    public int strStr(String haystack, String needle) {
-        int L = needle.length(), n = haystack.length();
-        if (L == 0) return 0;
-        int pn = 0;
-        while (pn < n - L + 1) {
-            while (pn < n - L + 1 && haystack.charAt(pn) != needle.charAt(0)) ++pn;
-            int currLen = 0, pL = 0;
-            while (pL < L && pn < n && haystack.charAt(pn) == needle.charAt(pL)) {
-                ++pn;
-                ++pL;
-                ++currLen;
-            }
-            if (currLen == L) return pn - L;
-            pn = pn - currLen + 1;
-        }
-        return -1;
-    }
-
-    // 172 2020-08-03 16:02:20
-    public int trailingZeroes(int n) {
-        int zeroCount = 0;
-        long currentMultiple = 5;
-        while (n > 0) {
-            n /= 5;
-            zeroCount += n;
-        }
-        return zeroCount;
-    }
-
-    // 556 2020-08-03 16:34:11
-    private void reverse(char[] a, int start) {
-        int i = start, j = a.length - 1;
-        while (i < j) {
-            swap(a, i, j);
-            i++;
-            j--;
-        }
-    }
-
-    private void swap(char[] a, int i, int j) {
-        char temp = a[i];
-        a[i] = a[j];
-        a[j] = temp;
-    }
-
-    public int nextGreaterElement(int n) {
-        char[] a = ("" + n).toCharArray();
-        int i = a.length - 2;
-        while (i >= 0 && a[i + 1] <= a[i]) i--;
-        if (i < 0) return -1;
-        int j = a.length - 1;
-        while (j >= 0 && a[j] <= a[i]) j--;
-        swap(a, i, j);
-        reverse(a, i + 1);
-        try {
-            return Integer.parseInt(new String(a));
-        } catch (Exception e) {
-            return -1;
-        }
-    }
-
-    // 面试题 16.26 2020-08-03 16:58:54
-    public int calculate(String s) {
-        char[] cs = s.trim().toCharArray();
-        Stack<Integer> st = new Stack<>();
-        int ans = 0, i = 0;
-        while (i < cs.length) {
-            if (cs[i] == ' ') {
-                i++;
-                continue;
-            }
-            char tmp = cs[i];
-            if (tmp == '*' || tmp == '/' || tmp == '+' || tmp == '-') {
-                i++;
-                while (i < cs.length && cs[i] == ' ') i++;
-            }
-            int num = 0;
-            while (i < cs.length && Character.isDigit(cs[i])) {
-                num = num * 10 + cs[i] - '0';
-                i++;
-            }
-            switch (tmp) {
-                case '-':
-                    num = -num;
-                    break;
-                case '*':
-                    num = st.pop() * num;
-                    break;
-                case '/':
-                    num = st.pop() / num;
-                    break;
-                default:
-                    break;
-            }
-            st.push(num);
-        }
-        while (!st.isEmpty()) ans += st.pop();
         return ans;
     }
 }
