@@ -1,9 +1,3 @@
-import graph.BFS
-import graph.Dijkstra
-import offer_java.*
-import recursive.Recursive
-import search.Search
-import sort.Sort
 
 fun main() {
 
@@ -48,7 +42,4 @@ fun main() {
 //    val miwK = offer_kotlin.MaxInWindows()
 //    println(miwK.maxInWindows(intArrayOf(2, 3, 4, 2, 6, 2, 5, 1), 3))
 
-    val kn = KthNode()
-    val numbs = intArrayOf(1,3,2,5,4);
-    println(kn.isContinuous(numbs))
 }

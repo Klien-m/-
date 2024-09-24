@@ -1,13 +1,9 @@
 package interview;
 
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Stack;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @since 2020/8/16 18:19
@@ -240,9 +236,7 @@ public class Solution {
         return prob[end];
     }
 
-    @Test
     public void testSolve() {
-        assertEquals(2, 2);
         TreeNode root = new TreeNode(5);
         root.left = new TreeNode(1);
         root.right = new TreeNode(4);
